@@ -1,0 +1,15 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Strategy handoff drafts first content (circuit A to B)",
+  "description": "Locking a strategy session via handoff creates a campaign and drafts the first cross-channel content, returning the new campaign's board; the session is then linked to that campaign.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "GET {base_url}/api/v1/team/members and capture a lead member id for the X-Member-Id header used on all subsequent requests." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/strategy/sessions with the lead X-Member-Id header and JSON body {\"inputs\":[{\"type\":\"idea\",\"value\":\"An AI tool that verifies AI-generated code before teams ship it.\"}]}, then capture the returned session id." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/strategy/sessions/{session_id}/handoff with the lead X-Member-Id header and JSON body {\"audience_index\":0,\"angle_index\":0}." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns a board object with a 'campaign' (having a non-empty id and name), a 'tasks' array containing at least one task, and a non-empty 'members' array. Capture the campaign id." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/strategy/sessions/{session_id} with the lead X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and the session's 'campaign_id' now equals the captured campaign id (the session is linked to the new campaign)." }
+  ]
+}

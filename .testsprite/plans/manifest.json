@@ -1,0 +1,81 @@
+{
+  "description": "Maps each TestSprite project id to its owning user account and the plan files that belong to it. The two frontend project ids are the SAME app registered under two separate TestSprite accounts; they are not duplicates to be merged. Each account runs its own slice under its own credentials and logs its own runs/artifacts.",
+  "users": {
+    "userA": {
+      "name": "Pengcheng Lu",
+      "github": "pengchenglu1997",
+      "testspriteAccount": "lupengcheng1729@gmail.com"
+    },
+    "userB": {
+      "name": "Ziyu Zhou",
+      "github": "JiimS66",
+      "testspriteAccount": "jiimsmith66@outlook.com"
+    }
+  },
+  "activeHost": {
+    "note": "This machine is Ziyu Zhou's. The credential in ~/.config/testsprite/env authenticates as userB, so only userB projects are runnable here.",
+    "user": "userB"
+  },
+  "projects": [
+    {
+      "projectId": "c02a8edd-8926-4dd3-9f0b-f62b114563c8",
+      "name": "reelmatrix",
+      "type": "frontend",
+      "owner": "userA",
+      "plans": [
+        "home-object-navigation.plan.json",
+        "wizard-idea-chips-and-stages.plan.json",
+        "wizard-edge-inputs.plan.json",
+        "campaign-kanban-board.plan.json",
+        "review-approval-flow.plan.json"
+      ]
+    },
+    {
+      "projectId": "8f1a9a08-31f1-4bab-91e3-8d51627bcf40",
+      "name": "reelmatrix-api",
+      "type": "backend",
+      "owner": "userA",
+      "plans": [
+        "health-and-providers.plan.json",
+        "team-api-validation.plan.json"
+      ]
+    },
+    {
+      "projectId": "0e9b9bee-2ca7-4553-9706-3857a3e65289",
+      "name": "reelmatrix",
+      "type": "frontend",
+      "owner": "userB",
+      "runnableOnThisHost": true,
+      "plans": [
+        "homepage-smoke.plan.json",
+        "strategy-handoff-first-content.plan.json",
+        "task-detail-quality-controls.plan.json",
+        "task-workflow-end-to-end.plan.json",
+        "brand-hub-backbone.plan.json",
+        "brand-import-validation.plan.json",
+        "team-org-fleet-governance.plan.json",
+        "command-palette-navigation.plan.json",
+        "results-publish-analytics.plan.json"
+      ]
+    },
+    {
+      "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+      "name": "reelmatrix-api",
+      "type": "backend",
+      "owner": "userB",
+      "runnableOnThisHost": true,
+      "targetUrl": "http://121.43.99.199:8000",
+      "createdAt": "2026-07-05T22:25:02.369Z",
+      "note": "Backend project for userB (Ziyu Zhou). Backend plans to run on this host should target this projectId.",
+      "plans": [
+        "be-health-and-catalog.plan.json",
+        "be-member-bootstrap-and-auth.plan.json",
+        "be-strategy-session-loop.plan.json",
+        "be-strategy-handoff-first-content.plan.json",
+        "be-campaign-board-and-run.plan.json",
+        "be-input-validation-4xx.plan.json",
+        "be-llm-provider-override.plan.json"
+      ]
+    }
+  ]
+}

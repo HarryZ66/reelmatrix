@@ -1,0 +1,16 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Strategy loop (circuit A) over HTTP",
+  "description": "Starting a strategy session returns a first-turn draft with tagged audience candidates and positioning angles; the session is retrievable and advancing with feedback folds the steer in and grows the turn history.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "GET {base_url}/api/v1/team/members and capture a member id whose role is 'lead' to use as the X-Member-Id header on all subsequent requests." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/strategy/sessions with header X-Member-Id set to the lead id and JSON body {\"inputs\":[{\"type\":\"idea\",\"value\":\"An AI tool that verifies AI-generated code before engineering teams merge pull requests.\"}]}." },
+    { "type": "assertion", "description": "Verify the response is 200 with a JSON body containing a non-empty 'id', a 'status', and a 'draft' whose 'audience_candidates' has at least one entry (each with name, why, pain, confidence) and whose 'positioning_angles' has at least one entry (each with angle, rationale, confidence). Capture the session 'id'." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/strategy/sessions/{session_id} with the lead X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns the same session id with a populated draft (audience_candidates and positioning_angles non-empty)." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/strategy/sessions/{session_id}/advance with the lead X-Member-Id header and JSON body {\"feedback\":\"Focus on engineering managers who need confidence before merging AI-authored pull requests.\"}." },
+    { "type": "assertion", "description": "Verify the response is 200, the returned turn_count is greater than the previous turn_count (or turns array grew), and the draft is still structured (audience_candidates and positioning_angles non-empty)." }
+  ]
+}

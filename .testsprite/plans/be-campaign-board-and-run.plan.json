@@ -1,0 +1,18 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Campaign creation, board, and pipeline run",
+  "description": "A lead can create a campaign from a brief and read its board; running the campaign executes the multi-agent pipeline and returns tasks that carry pipeline status and owners.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "GET {base_url}/api/v1/team/members and capture a lead member id for the X-Member-Id header used on all subsequent requests." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/campaigns with the lead X-Member-Id header and JSON body {\"name\":\"TestSprite loop backend campaign\",\"template\":\"general\",\"brief\":{\"product_name\":\"ReelMatrix\",\"product_description\":\"AI marketing copilot\",\"target_audience\":\"engineering leaders\",\"marketing_goal\":\"awareness\"}}." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns a board with a 'campaign' (non-empty id and the given name), a 'tasks' array, and a non-empty 'members' array. Capture the campaign id." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/campaigns with the lead X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and the returned list includes a campaign whose id equals the captured campaign id." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/campaigns/{campaign_id}/board with the lead X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns the campaign board; every task has a 'status' drawn from the pipeline statuses and a 'kind', and the board's members list is non-empty." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/campaigns/{campaign_id}/run with the lead X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns a board whose 'tasks' array is non-empty, with at least one task carrying generated output or a non-plan status (the pipeline advanced the board)." }
+  ]
+}

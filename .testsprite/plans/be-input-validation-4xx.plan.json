@@ -1,0 +1,18 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Team API rejects bad input with 4xx, not 5xx",
+  "description": "Strict Pydantic schemas and unknown ids must surface as clean client errors, never 500s: malformed body -> 422, unknown campaign -> 404, unknown member -> 401.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "GET {base_url}/api/v1/team/members and capture a lead member id for the X-Member-Id header used below." },
+    { "type": "action", "description": "POST {base_url}/api/v1/team/strategy/sessions with the lead X-Member-Id header and a malformed JSON body that omits the required 'inputs' field, e.g. {\"idea\":\"missing the inputs array\"}." },
+    { "type": "assertion", "description": "Verify the response status is in the 4xx range (expected 422) with a JSON error detail, and is not a 5xx." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/campaigns/00000000-0000-0000-0000-000000000000/board with the lead X-Member-Id header (a syntactically valid but non-existent campaign id)." },
+    { "type": "assertion", "description": "Verify the response is a 404 with a JSON error body, not a 500." },
+    { "type": "action", "description": "POST {base_url}/api/v1/campaign/generate with a JSON body that is valid except for one unexpected extra field, e.g. {\"product_name\":\"X\",\"product_description\":\"Y\",\"target_audience\":\"Z\",\"marketing_goal\":\"awareness\",\"user_prompt\":\"draft it\",\"unexpected_field\":true}." },
+    { "type": "assertion", "description": "Verify the response is 422 (the request schema forbids extra fields) with a JSON error body, not a 5xx." },
+    { "type": "action", "description": "GET {base_url}/api/v1/team/campaigns with header X-Member-Id set to a member id that does not exist (simulating a different tenant or made-up member)." },
+    { "type": "assertion", "description": "Verify the API refuses it with a 401 and does not leak any campaign data." }
+  ]
+}

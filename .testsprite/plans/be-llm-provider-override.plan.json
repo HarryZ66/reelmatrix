@@ -1,0 +1,14 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Legacy generate endpoint and per-request provider override",
+  "description": "The legacy POST /api/v1/campaign/generate returns a full workflow response; the X-LLM-Provider header selects a provider from the catalog, and an unknown provider is rejected as a clean 400, not a 500.",
+  "priority": "p2",
+  "planSteps": [
+    { "type": "action", "description": "GET {base_url}/api/v1/llm/providers and capture the provider_id of the entry whose is_default is true." },
+    { "type": "action", "description": "POST {base_url}/api/v1/campaign/generate with header X-LLM-Provider set to the captured default provider_id and JSON body {\"product_name\":\"ReelMatrix\",\"product_description\":\"An AI marketing copilot that co-creates strategy and drafts content.\",\"target_audience\":\"Marketing leads at small teams\",\"marketing_goal\":\"Awareness and signups\",\"user_prompt\":\"Draft a launch campaign.\"}." },
+    { "type": "assertion", "description": "Verify the response is 200 with a JSON body containing 'status' (one of 'needs_more_ideation' or 'plan_generated') and an 'ideation_result'; when status is 'plan_generated' a non-null 'campaign_plan' is present, and when status is 'needs_more_ideation' 'campaign_plan' is null." },
+    { "type": "action", "description": "POST {base_url}/api/v1/campaign/generate with header X-LLM-Provider set to an unknown value such as 'not-a-real-provider' and the same valid JSON body as above." },
+    { "type": "assertion", "description": "Verify the response is a 400 with a JSON error detail (provider selection error), not a 5xx." }
+  ]
+}

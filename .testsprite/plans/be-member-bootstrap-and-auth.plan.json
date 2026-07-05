@@ -1,0 +1,17 @@
+{
+  "projectId": "364babc2-b2b6-43e8-a6b2-4edd5f535e07",
+  "type": "backend",
+  "name": "Member bootstrap and X-Member-Id auth stub",
+  "description": "GET /api/v1/team/members is public and is how a client discovers a valid acting member; team routes require a real X-Member-Id header (missing -> 422, unknown -> 401, valid lead -> 200).",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "Send a GET request to {base_url}/api/v1/team/members with no X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns a non-empty list of members; each has id, kind, role and display_name; capture the id of a member whose role is 'lead' for use as X-Member-Id below." },
+    { "type": "action", "description": "Send a GET request to {base_url}/api/v1/team/todo with no X-Member-Id header." },
+    { "type": "assertion", "description": "Verify the response is 422 (the required header is missing) with a JSON error body, not a 5xx." },
+    { "type": "action", "description": "Send a GET request to {base_url}/api/v1/team/todo with header X-Member-Id set to a made-up id such as 'does-not-exist'." },
+    { "type": "assertion", "description": "Verify the response is 401 with a JSON error detail of 'Unknown member.', not a 5xx." },
+    { "type": "action", "description": "Send a GET request to {base_url}/api/v1/team/todo with header X-Member-Id set to the captured lead member id." },
+    { "type": "assertion", "description": "Verify the response is 200 and returns a JSON array (the lead's todo list, possibly empty)." }
+  ]
+}
